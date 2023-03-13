@@ -1,12 +1,13 @@
-# Curerr v1.0.3
+# Curerr v1.0.6
 - [x] A crate for error handling
 
 ## Documentation
 - [x] rust docs - https://docs.rs/curerr
 
 ## Changelog
-- Removed Sockets, OS error types in CursedError enum
-- Added more error types in CursedError enum
+- Implemented `From<ErrorKind>` for CursedError
+- Added CursedErrorType enum
+- Modified CursedError enum
 
 ## Example
 ```rust
