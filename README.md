@@ -1,13 +1,13 @@
-# Curerr v1.0.7
+# Curerr v1.1.0
 - [x] A crate for error handling
 
 ## Documentation
 - [x] rust docs - https://docs.rs/curerr
 
 ## Changelog
-- Implemented `From<ErrorKind>` for CursedError
-- Added CursedErrorType enum
-- Modified CursedError enum
+- Added Call, Data option for CursedError
+- Added NotSupported option for CursedErrorType
+- Renamed CursedError enum option Argument to Input
 
 ## v1.0.6 yank reasons
 - CursedError implementation wasn't complete

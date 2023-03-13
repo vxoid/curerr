@@ -66,14 +66,16 @@ impl std::error::Error for CursedErrorHandle {}
 /// ```
 pub enum CursedError {
     Connection(CursedErrorType),
-    Argument(CursedErrorType),
     Address(CursedErrorType),
     Memory(CursedErrorType),
     Buffer(CursedErrorType),
     Envvar(CursedErrorType),
     Other(CursedErrorType),
+    Input(CursedErrorType),
     File(CursedErrorType),
     Path(CursedErrorType),
+    Data(CursedErrorType),
+    Call(CursedErrorType),
     NoError,
     Unknown
 }
@@ -82,17 +84,18 @@ impl ToString for CursedError {
     fn to_string(&self) -> String {
         match self {
             CursedError::Connection(err) => format!("connection {}", err.to_str()),
-            CursedError::Argument(err) => format!("argument {}", err.to_str()),
             CursedError::Address(err) => format!("address {}", err.to_str()),
             CursedError::Buffer(err) => format!("buffer {}", err.to_str()),
             CursedError::Envvar(err) => format!("envvar {}", err.to_str()),
             CursedError::Memory(err) => format!("memory {}", err.to_str()),
+            CursedError::Input(err) => format!("input {}", err.to_str()),
             CursedError::File(err) => format!("file {}", err.to_str()),
             CursedError::Path(err) => format!("path {}", err.to_str()),
+            CursedError::Call(err) => format!("call {}", err.to_str()), 
+            CursedError::Data(err) => format!("data {}", err.to_str()),
             CursedError::Other(err) => err.to_str().to_string(),
             CursedError::NoError => "no error".to_string(),
             CursedError::Unknown => "unknown".to_string(),
-            
         }        
     }
 }
@@ -102,6 +105,7 @@ pub enum CursedErrorType {
     NotImplemented,
     AlreadyExists,
     AccessDenied,
+    NotSupported,
     Interrupted,
     NotEnough,
     Timedout,
@@ -120,6 +124,7 @@ impl CursedErrorType {
             CursedErrorType::NotImplemented => "not implemented",
             CursedErrorType::AlreadyExists => "already exists",
             CursedErrorType::AccessDenied => "access denied",
+            CursedErrorType::NotSupported => "not supported", 
             CursedErrorType::Interrupted => "interrupted",
             CursedErrorType::NotEnough => "not enough",
             CursedErrorType::Timedout => "timed out",
@@ -144,13 +149,13 @@ impl From<ErrorKind> for CursedError {
             ErrorKind::ConnectionAborted => Self::Connection(CursedErrorType::Aborted),
             ErrorKind::NotConnected => Self::Connection(CursedErrorType::NotImplemented),
             ErrorKind::AddrInUse => Self::Address(CursedErrorType::AlreadyExists),
-            ErrorKind::AddrNotAvailable => Self::Address(CursedErrorType::NotImplemented),
+            ErrorKind::AddrNotAvailable => Self::Address(CursedErrorType::NotSupported),
             ErrorKind::AlreadyExists => Self::Other(CursedErrorType::AlreadyExists),
-            ErrorKind::InvalidInput => Self::Other(CursedErrorType::Invalid),
-            ErrorKind::InvalidData => Self::Other(CursedErrorType::Invalid),
-            ErrorKind::TimedOut => Self::Other(CursedErrorType::Timedout),
+            ErrorKind::InvalidInput => Self::Input(CursedErrorType::Invalid),
+            ErrorKind::InvalidData => Self::Data(CursedErrorType::Invalid),
+            ErrorKind::TimedOut => Self::Call(CursedErrorType::Timedout),
             ErrorKind::Interrupted => Self::Other(CursedErrorType::Interrupted),
-            ErrorKind::Unsupported => Self::Other(CursedErrorType::NotImplemented),
+            ErrorKind::Unsupported => Self::Other(CursedErrorType::NotSupported),
             ErrorKind::OutOfMemory => Self::Memory(CursedErrorType::NotEnough),
             _ => Self::Unknown,
         }
