@@ -4,12 +4,12 @@ use std::io::ErrorKind;
 /// 
 /// # Examples
 /// ```
-/// use cursederror::*;
+/// use curerr::*;
 /// 
 /// fn devide(a: i32, b: i32) -> Result<i32, CursedErrorHandle> {
 ///     if b == 0 {
 ///         return Err(CursedErrorHandle::new(
-///             CursedError::InvalidArgument,
+///             CursedError::Argument(CursedErrorType::Invalid),
 ///             "0 division!!!".to_string()
 ///         ))
 ///     }
@@ -40,7 +40,7 @@ impl CursedErrorHandle {
 
 impl std::fmt::Display for CursedErrorHandle {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} kind of error: \"{}\"", self.error.to_string(), self.reason)
+        write!(f, "{} error: \"{}\"", self.error.to_string(), self.reason)
     }
 }
 impl std::fmt::Debug for CursedErrorHandle {
@@ -53,8 +53,20 @@ impl std::fmt::Debug for CursedErrorHandle {
 impl std::error::Error for CursedErrorHandle {}
 
 /// enum with kinds of errors
+/// # Examples
+/// ```
+/// use curerr::*;
+/// 
+/// let error = CursedErrorHandle::new(
+///     CursedError::Path(CursedErrorType::Invalid),
+///     "path is invalid".to_string()
+/// );
+/// 
+/// assert_eq!(format!("{}", error), "path invalid error: \"path is invalid\"".to_string());
+/// ```
 pub enum CursedError {
     Connection(CursedErrorType),
+    Argument(CursedErrorType),
     Address(CursedErrorType),
     Memory(CursedErrorType),
     Buffer(CursedErrorType),
@@ -70,6 +82,7 @@ impl ToString for CursedError {
     fn to_string(&self) -> String {
         match self {
             CursedError::Connection(err) => format!("connection {}", err.to_str()),
+            CursedError::Argument(err) => format!("argument {}", err.to_str()),
             CursedError::Address(err) => format!("address {}", err.to_str()),
             CursedError::Buffer(err) => format!("buffer {}", err.to_str()),
             CursedError::Envvar(err) => format!("envvar {}", err.to_str()),
