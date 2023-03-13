@@ -8,14 +8,14 @@
 ///     if b == 0 {
 ///         return Err(CursedErrorHandle::new(
 ///             CursedError::InvalidArgument,
-///             "0 devision!!!".to_string()
+///             "0 division!!!".to_string()
 ///         ))
 ///     }
 /// 
 ///     Ok(a/b)
 /// }
 /// 
-/// let result = devide(6, 3).expect("devision error");
+/// let result = devide(6, 3).expect("division error");
 /// 
 /// assert_eq!(result, 2)
 /// ```
@@ -38,12 +38,12 @@ impl CursedErrorHandle {
 
 impl std::fmt::Display for CursedErrorHandle {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} kind error: \"{}\"", self.error.debug(), self.reason)
+        write!(f, "{} kind of error: \"{}\"", self.error.to_str(), self.reason)
     }
 }
 impl std::fmt::Debug for CursedErrorHandle {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_tuple(self.error.debug())
+        f.debug_tuple(self.error.to_str())
             .field(&self.reason)
             .finish()
     }
@@ -52,33 +52,53 @@ impl std::error::Error for CursedErrorHandle {}
 
 /// enum with kinds of errors
 pub enum CursedError {
+    InsufficientBuffer,
+    NotEnoughMemory,
     InvalidArgument,
-    InvalidCommand,
-    InvalidOption,
+    NotImplemented,
+    AlreadyExists,
+    AccessDenied,
     Initialize,
     ThreadJoin,
-    NotEnought,
-    TimeOut,
-    Sockets,
+    NotEnough,
+    NotFound,
+    Invalid,
+    Aborted,
+    Timeout,
     TooMany,
+    NoError,
     Parse,
-    OS
+    Write,
+    Read
 }
 
 impl CursedError {
-    pub fn debug(&self) -> &'static str {
-        match *self {
+    pub fn to_str(&self) -> &'static str {
+        match self {
+            CursedError::InsufficientBuffer => "insufficient buffer",
+            CursedError::NotEnoughMemory => "not enough memory",
             CursedError::InvalidArgument => "invalid argument",
-            CursedError::InvalidCommand => "invalid command",
-            CursedError::InvalidOption => "invalid option",
+            CursedError::NotImplemented => "not implemented",
+            CursedError::AlreadyExists => "already exists",
+            CursedError::AccessDenied => "access denied",
             CursedError::Initialize => "initialize",
             CursedError::ThreadJoin => "thread join",
-            CursedError::NotEnought => "not enought",
-            CursedError::TimeOut => "time out",
-            CursedError::Sockets => "sockets",
+            CursedError::NotEnough => "not enought",
+            CursedError::NotFound => "not found",
+            CursedError::Timeout => "time out",
             CursedError::TooMany => "too many",
+            CursedError::NoError => "no error",
+            CursedError::Aborted => "aborted",
+            CursedError::Invalid => "invalid",
             CursedError::Parse => "parse",
-            CursedError::OS => "OS",
+            CursedError::Write => "write",
+            CursedError::Read => "read",
         }
+    }
+}
+
+impl ToString for CursedError {
+    fn to_string(&self) -> String {
+        self.to_str().to_string()
     }
 }
